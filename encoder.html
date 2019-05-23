@@ -1,0 +1,88 @@
+<style>
+#_plain{
+    width:100%;
+    height:100%;
+}
+#_code{
+    width:100%;
+    height:100%
+}
+#_convert{
+    position: absolute;
+    top:5px;
+    right:5px;
+    opacity:0.6;
+    cursor: pointer;
+}
+table{
+    width:100%;
+    height:800px;
+}
+
+table td{
+    position: relative;
+}
+
+</style>
+<h1>/[a-z.()]+/ Convertor</h1>
+<table>
+    <tr>
+        <td>
+            <textarea id=_plain>alert('xss')</textarea>
+            <button id=_convert>convert</button>
+        </td>
+        <td>
+            <textarea id=_code></textarea>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+<script>
+const emptystr = 'name';
+const dict = {
+    0:'stop.length',
+    1:'eval.length',
+    2:'console.dir.name.slice(true).length',
+    3:'console.dir.name.length',
+    4:'eval.name.length',
+    5:'fetch.name.length',
+    6:'escape.name.length',
+    7:'confirm.name.length',
+    '\'': 'escape().substr.call(...atob(escape().slice.name.slice(true)).concat(eval).concat(eval.length).concat(eval).concat(eval.length).split(eval))',
+    ')': 'unescape(eval).slice(...name.concat(escape().concat(false).length).concat(top).concat(name.small().length).split(top))'
+}
+
+const base = `atob(scroll.name.substring(eval.name.length).concat(console.context.name.substring(fetch.name.length))).slice(true).split(${emptystr}).shift()`
+
+
+function intToStr(i){
+    let x = i.toString()
+    let res = emptystr;
+    for(let c of x) res+= `.concat(${dict[c]})`
+    return res
+}
+
+function toCode(code){
+    let res = `unescape(eval).substr(...(name.concat(escape().length).concat(top).concat(fetch.name.length).split(top))).concat(${dict['\'']})`
+
+    for(let c of code) {
+        let oct = c.charCodeAt(0).toString(8);
+        res += `.concat(${base}.concat(${intToStr(oct)}))`
+    }
+    res += `.concat(${dict['\'']}).concat(${dict[')']})`
+
+    return `eval(eval(${res}))`
+}
+
+_convert.onclick = function(){
+    let code = _plain.value;
+    let res = toCode(code);
+    _code.value = res
+
+}
+
+</script>
