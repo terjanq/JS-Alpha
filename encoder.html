@@ -52,21 +52,32 @@ table td{
 
 
 <script>
-const emptystr = 'name';
+const emptystr = 'escape().match().pop()';
 const dict = {
-    0:'stop.length',
-    1:'eval.length',
-    2:'console.dir.name.slice(true).length',
-    3:'console.dir.name.length',
-    4:'eval.name.length',
-    5:'fetch.name.length',
-    6:'escape.name.length',
-    7:'confirm.name.length',
-    '\'': 'escape().substr.call(...atob(escape().slice.name.slice(true)).concat(eval).concat(eval.length).concat(eval).concat(eval.length).split(eval))',
-    ')': 'unescape(eval).slice(...name.concat(escape().concat(false).length).concat(top).concat(name.small().length).split(top))'
+    0: 'escape().sub.length',
+    1: 'eval.length',
+    2: 'escape().replace.length',
+    3: 'escape().sub.name.length',
+    4: 'eval.name.length',
+    5: 'escape(false).length',
+    6: 'escape.name.length',
+    7: '(typeof(true)).length',
+    8: 'unescape.name.length',
+    9: 'escape().length',
+    a: 'eval.apply.name.split(escape().constructor()).shift()',
+    b: 'eval.bind.name.split(escape().constructor()).shift()',
+    c: 'eval.call.name.split(escape().constructor()).shift()',
+    d: 'eval.bind.name.split(escape().constructor()).pop()',
+    e: 'eval.name.split(escape().constructor()).shift()',
+    f: 'escape(eval).split(escape().constructor()).shift()',
+    ')': 'unescape(eval).slice(...escape().match().pop().concat(escape().concat(false).length).concat(eval).concat(eval.name.sup().length).split(eval))',
+    '%': 'escape(crypto).split(escape().match().pop()).shift()',
+    27: 'escape().sup().bold().length',
 }
 
-const base = `atob(scroll.name.substring(eval.name.length).concat(console.warn.name)).slice(true).split(${emptystr}).shift()`
+dict['\''] = `unescape(${dict['%']}.concat(${dict[27]}))`
+const join = `unescape(${dict['%']}.concat(${dict[5]}).concat(${dict['c']}))` // \
+console.log(join);
 
 
 
@@ -78,15 +89,16 @@ function intToStr(i){
 }
 
 function toCode(code){
-    let res = `unescape(eval).substr(...(name.concat(escape().length).concat(top).concat(fetch.name.length).split(top))).concat(${dict['\'']})`
-
+    let prefix = `unescape(eval).substr(...(escape(escape().length).concat(eval).concat(${dict[5]}).split(eval))).concat(${dict['\'']})`
+    let mid = 'escape().match()'
     for(let c of code) {
         let oct = c.charCodeAt(0).toString(8);
-        res += `.concat(${base}.concat(${intToStr(oct)}))`
+        mid += `.concat(${intToStr(oct)})`
     }
-    res += `.concat(${dict['\'']}).concat(${dict[')']})`
+    mid += `.join(${join})`
+    let suf = `${dict['\'']}).concat(${dict[')']}`
 
-    return `eval(${res})`
+    return `eval(${prefix}.concat(${mid}).concat(${suf}))`
 }
 
 _convert.onclick = function(){
