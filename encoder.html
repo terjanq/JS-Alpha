@@ -85,7 +85,7 @@ function toCode(code){
     }
     res += `.concat(${dict['\'']}).concat(${dict[')']})`
 
-    return `eval(eval(${res}))`
+    return `eval(${res})`
 }
 
 _convert.onclick = function(){
