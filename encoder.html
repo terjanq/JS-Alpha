@@ -14,6 +14,15 @@
     opacity:0.6;
     cursor: pointer;
 }
+
+#_eval{
+    position: absolute;
+    top:30px;
+    right:5px;
+    opacity:0.6;
+    cursor: pointer;
+}
+
 table{
     width:100%;
     height:800px;
@@ -30,6 +39,7 @@ table td{
         <td>
             <textarea id=_plain>alert('xss')</textarea>
             <button id=_convert>convert</button>
+            <button id=_eval>eval</button>
         </td>
         <td>
             <textarea id=_code></textarea>
@@ -82,7 +92,12 @@ _convert.onclick = function(){
     let code = _plain.value;
     let res = toCode(code);
     _code.value = res
+}
 
+_eval.onclick = function(){
+    _convert.click();
+    let code = _code.value;
+    eval(code);
 }
 
 </script>
