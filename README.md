@@ -10,6 +10,7 @@ eval(unescape(escape().match().concat(escape().link(unescape).length).concat(esc
 *No UTF8 support*
 
 
+### Credits
 The encoder was created as a collaboration of:
 - Me (@terjanq)
 - Pepe Vila (@cgvwzq)
