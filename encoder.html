@@ -23,6 +23,7 @@ body{color:#14171a;background:#e6ecf0}#_plain{width:100%;height:100%}#_code{widt
 <script>
 const emptystr = 'escape().match().pop()';
 const dict = {
+    // numbers
     '-1': 'escape().search(true)',
     0: 'escape().search()',
     1: 'eval.length',
@@ -205,29 +206,48 @@ const dict = {
     178: 'escape(escape(unescape).fontcolor(unescape)).length',
     179: 'escape(eval).fontsize(eval).link(escape(eval)).length',
     180: 'escape(eval).fontcolor(eval).link(escape(eval)).length',
-    a: 'eval.apply.name.split(escape().match()).shift()',
-    b: 'eval.bind.name.split(escape().match()).shift()',
-    c: 'eval.call.name.split(escape().match()).shift()',
+
+    // hex letters
+    a: 'escape(...eval.apply.name)',
+    b: 'escape(...eval.bind.name)',
+    c: 'escape(...eval.call.name)',
     d: 'eval.bind.name.slice(escape().search(true))',
-    e: 'eval.name.split(escape().match()).shift()',
-    f: 'escape(eval).split(escape().match()).shift()',
-    '%': 'escape(this).split(escape().match()).shift()',
+    e: 'escape(...eval.name)',
+    f: 'escape(...escape(eval))',
+
+    // escape character
+    '%': 'unescape(...escape(this))',
 }
 
 dict[')'] = `unescape(eval).split(escape().match()).slice(${dict[14]}).shift()`
 dict['\''] = `unescape(${dict['%']}.concat(${dict[27]}))`
 dict['\\'] = `unescape(${dict['%']}.concat(${dict[5]}).concat(${dict['c']}))` // \
 
-function intToStr(i){
-    return dict[i];
+// Code written by Pepe Vila (@cgvwzq)
+// unescape('%2f%27')
+function encode_unescape(input){
+    let cnv = [...input].map(e => ('00' + e.charCodeAt(0).toString(16)).substr(-2));
+    let output = 'eval(unescape(escape().match()';
+    for (let c in cnv) {
+        if (cnv[c] in dict)
+            output += '.concat('+dict[cnv[c]]+')';
+        else{
+            let [u,l] = cnv[c];
+            output += '.concat(escape('+dict[u]+').concat('+dict[l]+'))';
+        } 
+    }
+    output += '.join('+dict['%']+')))';
+    return output
 }
 
-function toCode(code){
+// Code written by me (@terjanq)
+// eval('\141\141\141')
+function encode_eval(input){
     let prefix = `unescape(eval).substr(...(escape(${dict[9]}).concat(eval).concat(${dict[5]}).split(eval))).concat(${dict['\'']})`
     let mid = 'escape().match()'
-    for(let c of code) {
+    for(let c of input) {
         let oct = c.charCodeAt(0).toString(8);
-        mid += `.concat(${intToStr(oct)})`
+        mid += `.concat(${dict[oct]})`
     }
     mid += `.join(${dict['\\']})`
     let suf = `${dict['\'']}).concat(${dict[')']}`
@@ -235,9 +255,17 @@ function toCode(code){
     return `eval(${prefix}.concat(${mid}).concat(${suf}))`
 }
 
+// choose the shorter code
+function convert(input){
+    const [res1, res2] = [encode_eval(input), encode_unescape(input)]
+    if(res2.length < res1.length)
+        return res2
+    return res1
+}
+
 _convert.onclick = function(){
-    let code = _plain.value;
-    let res = toCode(code);
+    const input = _plain.value;
+    let res = convert(input);
     _code.value = res
 }
 
