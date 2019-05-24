@@ -1,4 +1,6 @@
 # JS-Alpha
-Funny project to create a converter that converts any javascript code to the code that contains only [a-z().] characters
+Funny project to create an encoder/obfuscator that converts any javascript code into a code that only consist of `/[a-z().]/` characters
 
 Demo: https://terjanq.github.io/JS-Alpha/encoder.html
+
+*No UTF8 support*
