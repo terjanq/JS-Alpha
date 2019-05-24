@@ -1,54 +1,23 @@
 <style>
-#_plain{
-    width:100%;
-    height:100%;
-}
-#_code{
-    width:100%;
-    height:100%
-}
-#_convert{
-    position: absolute;
-    top:5px;
-    right:5px;
-    opacity:0.6;
-    cursor: pointer;
-}
-
-#_eval{
-    position: absolute;
-    top:30px;
-    right:5px;
-    opacity:0.6;
-    cursor: pointer;
-}
-
-table{
-    width:100%;
-    height:800px;
-}
-
-table td{
-    position: relative;
-}
-
+body{color:#14171a;background:#e6ecf0}#_plain{width:100%;height:100%}#_code{width:100%;height:100%}#_convert{position:absolute;top:15px;right:15px;opacity:.6;cursor:pointer}textarea{padding:10px}button{height:30px}#_eval{position:absolute;top:50px;right:15px;opacity:.6;cursor:pointer}table{width:100%;height:calc(100% - 300px)}table td{position:relative;padding:10px}.title h1{font-size:60px}.title h1,.title p{text-align:center}.title p{font-style:italic;font-size:20px}
 </style>
-<h1>/[a-z.()]+/ Convertor</h1>
+<div class=title>
+<h1>JS-Alpha</h1>
+<p>Convert any JavaScript code into one containing only <code>/[a-z.()]/</code> characters.</p>
+</div>
+
 <table>
     <tr>
         <td>
             <textarea id=_plain>alert('xss')</textarea>
             <button id=_convert>convert</button>
-            <button id=_eval>eval</button>
+            <button id=_eval>convert & eval</button>
         </td>
         <td>
             <textarea id=_code></textarea>
         </td>
     </tr>
 </table>
-
-
-
 
 
 <script>
@@ -236,50 +205,6 @@ const dict = {
     178: 'escape(escape(unescape).fontcolor(unescape)).length',
     179: 'escape(eval).fontsize(eval).link(escape(eval)).length',
     180: 'escape(eval).fontcolor(eval).link(escape(eval)).length',
-    181: 'escape(eval).fontsize(eval).link(escape(escape)).length',
-    182: 'escape(eval).fontcolor(eval).link(escape(escape)).length',
-    183: 'escape(eval).fontsize(eval).link(escape(unescape)).length',
-    184: 'escape(eval).fontcolor(eval).link(escape(unescape)).length',
-    185: 'escape(escape(eval).link(escape(eval))).length',
-    186: 'escape(eval).fontcolor(eval).fontsize(escape(eval)).length',
-    187: 'escape(escape(eval).link(escape(escape))).length',
-    188: 'escape(eval).fontcolor(eval).fontsize(escape(escape)).length',
-    189: 'escape(escape(eval).link(escape(unescape))).length',
-    190: 'escape(eval).fontcolor(eval).fontsize(escape(unescape)).length',
-    191: 'escape(escape(eval).fontsize(escape(eval))).length',
-    192: 'escape(escape(eval).fontcolor(escape(eval))).length',
-    193: 'escape(escape(eval).fontsize(escape(escape))).length',
-    194: 'escape(escape(eval).fontcolor(escape(escape))).length',
-    195: 'escape(escape(eval).fontsize(escape(unescape))).length',
-    196: 'escape(escape(eval).fontcolor(escape(unescape))).length',
-    197: 'escape(escape(escape).fontsize(escape(unescape))).length',
-    198: 'escape(escape(escape).fontcolor(escape(unescape))).length',
-    199: 'escape(escape(unescape).fontsize(escape(unescape))).length',
-    200: 'escape(escape(unescape).fontcolor(escape(unescape))).length',
-    201: 'escape(eval).fontsize(escape(eval)).link(escape(eval)).length',
-    202: 'escape(eval).fontcolor(escape(eval)).link(escape(eval)).length',
-    203: 'escape(eval).fontsize(escape(eval)).link(escape(escape)).length',
-    204: 'escape(eval).fontcolor(escape(eval)).link(escape(escape)).length',
-    205: 'escape(eval).fontsize(escape(eval)).link(escape(unescape)).length',
-    206: 'escape(eval).fontcolor(escape(eval)).link(escape(unescape)).length',
-    207: 'escape(eval).fontsize(escape(eval)).fontsize(escape(eval)).length',
-    208: 'escape(eval).fontcolor(escape(eval)).fontsize(escape(eval)).length',
-    209: 'escape(eval).fontcolor(escape(eval)).fontcolor(escape(eval)).length',
-    210: 'escape(eval).fontcolor(escape(eval)).fontsize(escape(escape)).length',
-    211: 'escape(eval).fontcolor(escape(eval)).fontcolor(escape(escape)).length',
-    212: 'escape(eval).fontcolor(escape(eval)).fontsize(escape(unescape)).length',
-    213: 'escape(eval).fontcolor(escape(eval)).fontcolor(escape(unescape)).length',
-    214: 'escape(eval).fontcolor(escape(escape)).fontsize(escape(unescape)).length',
-    215: 'escape(eval).fontcolor(escape(escape)).fontcolor(escape(unescape)).length',
-    216: 'escape(eval).fontcolor(escape(unescape)).fontsize(escape(unescape)).length',
-    217: 'escape(eval).fontcolor(escape(unescape)).fontcolor(escape(unescape)).length',
-    218: 'escape(escape).fontcolor(escape(unescape)).fontsize(escape(unescape)).length',
-    219: 'escape(escape).fontcolor(escape(unescape)).fontcolor(escape(unescape)).length',
-    220: 'escape(unescape).fontcolor(escape(unescape)).fontsize(escape(unescape)).length',
-    221: 'escape(unescape).fontcolor(escape(unescape)).fontcolor(escape(unescape)).length',
-    239: 'escape(escape(eval).split(escape().match().pop())).length',
-    247: 'escape(escape(escape).split(escape().match().pop())).length',
-    255: 'escape(escape(unescape).split(escape().match().pop())).length',
     a: 'eval.apply.name.split(escape().match()).shift()',
     b: 'eval.bind.name.split(escape().match()).shift()',
     c: 'eval.call.name.split(escape().match()).shift()',
@@ -295,10 +220,6 @@ dict['\\'] = `unescape(${dict['%']}.concat(${dict[5]}).concat(${dict['c']}))` //
 
 function intToStr(i){
     return dict[i];
-    // let x = i.toString()
-    // let res = emptystr;
-    // for(let c of x) res+= `.concat(${dict[c]})`
-    // return res
 }
 
 function toCode(code){
