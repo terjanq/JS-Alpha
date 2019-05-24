@@ -286,15 +286,12 @@ const dict = {
     d: 'eval.bind.name.slice(escape().search(true))',
     e: 'eval.name.split(escape().match()).shift()',
     f: 'escape(eval).split(escape().match()).shift()',
-    ')': 'unescape(eval).slice(...escape().match().pop().concat(escape().concat(false).length).concat(eval).concat(eval.name.sup().length).split(eval))',
-    '%': 'escape(crypto).split(escape().match().pop()).shift()',
+    '%': 'escape(this).split(escape().match()).shift()',
 }
 
+dict[')'] = `unescape(eval).split(escape().match()).slice(${dict[14]}).shift()`
 dict['\''] = `unescape(${dict['%']}.concat(${dict[27]}))`
-const join = `unescape(${dict['%']}.concat(${dict[5]}).concat(${dict['c']}))` // \
-console.log(join);
-
-
+dict['\\'] = `unescape(${dict['%']}.concat(${dict[5]}).concat(${dict['c']}))` // \
 
 function intToStr(i){
     return dict[i];
@@ -305,13 +302,13 @@ function intToStr(i){
 }
 
 function toCode(code){
-    let prefix = `unescape(eval).substr(...(escape(escape().length).concat(eval).concat(${dict[5]}).split(eval))).concat(${dict['\'']})`
+    let prefix = `unescape(eval).substr(...(escape(${dict[9]}).concat(eval).concat(${dict[5]}).split(eval))).concat(${dict['\'']})`
     let mid = 'escape().match()'
     for(let c of code) {
         let oct = c.charCodeAt(0).toString(8);
         mid += `.concat(${intToStr(oct)})`
     }
-    mid += `.join(${join})`
+    mid += `.join(${dict['\\']})`
     let suf = `${dict['\'']}).concat(${dict[')']}`
 
     return `eval(${prefix}.concat(${mid}).concat(${suf}))`
