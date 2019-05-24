@@ -1,0 +1,288 @@
+<style>
+        body{color:#14171a;background:#e6ecf0}#_plain{width:100%;height:100%}#_code{width:100%;height:100%}#_convert{position:absolute;top:15px;right:15px;opacity:.6;cursor:pointer}textarea{padding:10px}button{height:30px}#_eval{position:absolute;top:50px;right:15px;opacity:.6;cursor:pointer}table{width:100%;height:calc(100vh - 300px)}table td{position:relative;padding:10px}.title h1{font-size:60px}.title h1,.title p{text-align:center}.title p{font-style:italic;font-size:20px}
+        </style>
+        <div class=title>
+        <h1>JS-Alpha</h1>
+        <p>Convert any JavaScript code into one containing only <code>/[a-z.()]/</code> characters.</p>
+        </div>
+        
+        <table>
+            <tr>
+                <td>
+                    <textarea id=_plain>alert('xss')</textarea>
+                    <button id=_convert>convert</button>
+                    <button id=_eval>convert & eval</button>
+                </td>
+                <td>
+                    <textarea id=_code></textarea>
+                </td>
+            </tr>
+        </table>
+        
+        
+        <script>
+        const emptystr = 'match().pop()';
+        const dict = {
+            // numbers
+            '-1': 'search(true)',
+            0: 'search()',
+            1: 'length',
+            2: 'apply.length',
+            3: 'sub.name.length',
+            4: 'name.length',
+            5: 'apply.name.length',
+            6: 'escape.name.length',
+            7: 'replace.name.length',
+            8: 'unescape.name.length',
+            9: 'escape().length',
+            14: 'replace.name.bold().length',
+            27: 'big().bold().length',
+            10: 'sub.name.bold().length',
+            11: 'name.bold().length',
+            12: 'apply.name.bold().length',
+            13: 'name.fixed().length',
+            14: '(typeof(true)).bold().length',
+            15: 'name.big().length',
+            16: 'bold().length',
+            17: 'escape.name.big().length',
+            18: 'fixed().length',
+            19: 'name.blink().length',
+            20: 'big().length',
+            21: 'name.strike().length',
+            22: '(typeof(true)).blink().length',
+            23: 'name.link(true).length',
+            24: 'blink().length',
+            25: 'escape.name.link(true).length',
+            26: 'strike().length',
+            27: 'big().bold().length',
+            28: 'name.link().length',
+            29: 'apply.name.link().length',
+            30: 'escape.name.link().length',
+            31: 'big().big().length',
+            32: 'unescape.name.link().length',
+            33: 'unescape(eval).length',
+            34: 'name.fontsize().length',
+            35: 'unescape(escape).length',
+            36: 'escape.name.fontsize().length',
+            37: 'unescape(unescape).length',
+            38: 'unescape.name.fontsize().length',
+            39: 'fontsize().length',
+            40: 'fontcolor().length',
+            41: 'escape.name.big().link().length',
+            42: 'concat(eval).length',
+            43: 'name.blink().link().length',
+            44: 'unescape(eval).big().length',
+            45: 'name.link().strike().length',
+            46: 'unescape(escape).big().length',
+            47: 'bold().fontcolor().length',
+            48: 'unescape(eval).blink().length',
+            49: 'escape(link()).length',
+            50: 'unescape(eval).strike().length',
+            51: 'big().fontcolor().length',
+            52: 'name.link(eval).length',
+            53: 'apply.name.link(eval).length',
+            54: 'name.link(escape).length',
+            55: 'escape(eval).length',
+            56: 'name.link(unescape).length',
+            57: 'escape(escape).length',
+            58: 'name.fontsize(eval).length',
+            59: 'escape(unescape).length',
+            60: 'escape(eval).concat(false).length',
+            61: 'link(unescape).length',
+            62: 'escape(eval).bold().length',
+            63: 'fontsize(eval).length',
+            64: 'escape(eval).fixed().length',
+            65: 'fontsize(escape).length',
+            66: 'escape(eval).big().length',
+            67: 'fontsize(unescape).length',
+            68: 'escape(escape).big().length',
+            69: 'escape(eval).bold().bold().length',
+            70: 'escape(eval).blink().length',
+            71: 'escape(eval).bold().fixed().length',
+            72: 'escape(eval).strike().length',
+            73: 'escape(eval).big().bold().length',
+            74: 'escape(eval).link(true).length',
+            75: 'escape(eval).link(false).length',
+            76: 'escape(escape).link(true).length',
+            77: 'escape(escape(eval)).length',
+            78: 'escape(unescape).link(true).length',
+            79: 'escape(eval).link().length',
+            80: 'escape(eval).fontsize(true).length',
+            81: 'escape(escape).link().length',
+            82: 'escape(eval).fontcolor(false).length',
+            83: 'escape(unescape).link().length',
+            84: 'escape(escape(eval)).bold().length',
+            85: 'escape(eval).fontsize().length',
+            86: 'escape(eval).fontcolor().length',
+            87: 'escape(escape).fontsize().length',
+            88: 'escape(eval).concat(eval).length',
+            89: 'escape(unescape).fontsize().length',
+            90: 'escape(eval).big().link().length',
+            91: 'escape(apply.name.link(eval)).length',
+            92: 'escape(escape(eval).bold()).length',
+            93: 'escape(eval).bold().fontcolor().length',
+            94: 'escape(eval).blink().link().length',
+            95: 'escape(link(eval)).length',
+            96: 'escape(escape(eval).big()).length',
+            97: 'escape(link(escape)).length',
+            98: 'escape(escape(escape).big()).length',
+            99: 'escape(link(unescape)).length',
+            100: 'escape(escape(eval).blink()).length',
+            101: 'escape(escape(eval)).link().length',
+            102: 'escape(escape(eval).strike()).length',
+            103: 'escape(eval).link(eval).length',
+            104: 'escape(escape(escape).strike()).length',
+            105: 'escape(eval).link(escape).length',
+            106: 'escape(escape(unescape).strike()).length',
+            107: 'escape(eval).link(unescape).length',
+            108: 'escape(escape(eval)).fontcolor().length',
+            109: 'escape(eval).fontsize(eval).length',
+            110: 'escape(eval).fontcolor(eval).length',
+            111: 'escape(eval).fontsize(escape).length',
+            112: 'escape(eval).fontcolor(escape).length',
+            113: 'escape(eval).fontsize(unescape).length',
+            114: 'escape(eval).big().link(eval).length',
+            115: 'escape(escape).fontsize(unescape).length',
+            116: 'escape(eval).big().link(escape).length',
+            117: 'escape(escape(eval).link()).length',
+            118: 'escape(eval).blink().link(eval).length',
+            119: 'escape(escape(escape).link()).length',
+            120: 'escape(eval).link(eval).strike().length',
+            121: 'escape(escape(unescape).link()).length',
+            122: 'escape(eval).link(eval).link(true).length',
+            123: 'escape(escape(eval).fontsize()).length',
+            124: 'escape(escape(eval).fontcolor()).length',
+            125: 'escape(eval).link(escape(eval)).length',
+            126: 'escape(escape(escape).fontcolor()).length',
+            127: 'escape(eval).link().link(eval).length',
+            128: 'escape(escape(unescape).fontcolor()).length',
+            129: 'escape(eval).link().link(escape).length',
+            130: 'escape(eval).fontcolor(eval).link(false).length',
+            131: 'escape(eval).link().link(unescape).length',
+            132: 'escape(escape(eval).concat(eval)).length',
+            133: 'escape(eval).fontsize().link(eval).length',
+            134: 'escape(escape(eval).concat(escape)).length',
+            135: 'escape(eval).fontsize().link(escape).length',
+            136: 'escape(eval).concat(eval).link(eval).length',
+            137: 'escape(eval).fontsize().link(unescape).length',
+            138: 'escape(eval).concat(eval).link(escape).length',
+            139: 'escape(eval).fontsize().fontsize(eval).length',
+            140: 'escape(eval).blink().link(escape(eval)).length',
+            141: 'escape(unescape(eval).link(eval)).length',
+            142: 'escape(eval).concat(eval).fontsize(eval).length',
+            143: 'escape(unescape(eval).link(escape)).length',
+            144: 'escape(eval).concat(eval).fontsize(escape).length',
+            145: 'escape(unescape(eval).link(unescape)).length',
+            146: 'escape(eval).blink().fontsize(escape(eval)).length',
+            147: 'escape(unescape(eval).fontsize(eval)).length',
+            148: 'escape(unescape(eval).fontcolor(eval)).length',
+            149: 'escape(eval).link().link(escape(eval)).length',
+            150: 'escape(unescape(eval).fontcolor(escape)).length',
+            151: 'escape(eval).link(eval).link(eval).length',
+            152: 'escape(unescape(eval).fontcolor(unescape)).length',
+            153: 'escape(eval).link(eval).link(escape).length',
+            154: 'escape(escape(eval).concat(escape(eval))).length',
+            155: 'escape(eval).link(eval).link(unescape).length',
+            156: 'escape(escape(eval).concat(escape(escape))).length',
+            157: 'escape(eval).fontsize(eval).link(eval).length',
+            158: 'escape(eval).fontcolor(eval).link(eval).length',
+            159: 'escape(eval).fontsize(eval).link(escape).length',
+            160: 'escape(eval).fontcolor(eval).link(escape).length',
+            161: 'escape(eval).fontsize(eval).link(unescape).length',
+            162: 'escape(eval).fontcolor(eval).link(unescape).length',
+            163: 'escape(escape(eval).link(eval)).length',
+            164: 'escape(eval).fontcolor(eval).fontsize(eval).length',
+            165: 'escape(escape(eval).link(escape)).length',
+            166: 'escape(eval).fontcolor(eval).fontsize(escape).length',
+            167: 'escape(escape(eval).link(unescape)).length',
+            168: 'escape(eval).fontcolor(eval).fontsize(unescape).length',
+            169: 'escape(escape(eval).fontsize(eval)).length',
+            170: 'escape(escape(eval).fontcolor(eval)).length',
+            171: 'escape(escape(eval).fontsize(escape)).length',
+            172: 'escape(escape(eval).fontcolor(escape)).length',
+            173: 'escape(escape(eval).fontsize(unescape)).length',
+            174: 'escape(escape(eval).fontcolor(unescape)).length',
+            175: 'escape(escape(escape).fontsize(unescape)).length',
+            176: 'escape(escape(escape).fontcolor(unescape)).length',
+            177: 'escape(escape(unescape).fontsize(unescape)).length',
+            178: 'escape(escape(unescape).fontcolor(unescape)).length',
+            179: 'escape(eval).fontsize(eval).link(escape(eval)).length',
+            180: 'escape(eval).fontcolor(eval).link(escape(eval)).length',
+        
+            // hex letters
+            a: 'escape(...apply.name)',
+            b: 'escape(...bind.name)',
+            c: 'escape(...call.name)',
+            d: 'bind.name.slice(search(true))',
+            e: 'escape(...name)',
+            f: 'escape(...escape(eval))',
+        
+            // escape character
+            '%': 'unescape(...escape(this))',
+        }
+        
+        dict[')'] = `unescape(eval).split(match()).slice(${dict[14]}).shift()`
+        dict['\''] = `unescape(${dict['%']}.concat(${dict[27]}))`
+        dict['\\'] = `unescape(${dict['%']}.concat(${dict[5]}).concat(${dict['c']}))` // \
+        
+        // Code written by Pepe Vila (@cgvwzq)
+        // unescape('%2f%27')
+        function encode_unescape(input){
+            let cnv = [...input].map(e => ('00' + e.charCodeAt(0).toString(16)).substr(-2));
+            let output = 'with(escape())with(eval)eval(unescape(match()';
+            for (let c in cnv) {
+                if (cnv[c] in dict)
+                    output += '.concat('+dict[cnv[c]]+')';
+                else{
+                    let [u,l] = cnv[c];
+                    output += '.concat(escape('+dict[u]+').concat('+dict[l]+'))';
+                } 
+            }
+            output += '.join('+dict['%']+')))';
+            return output
+        }
+        
+        // Code written by me (@terjanq)
+        // eval('\141\141\141')
+        function encode_eval(input){
+            let prefix = `unescape(eval).substr(...(escape(${dict[9]}).concat(eval).concat(${dict[5]}).split(eval))).concat(${dict['\'']})`
+            let mid = 'match()'
+            for(let c of input) {
+                let oct = c.charCodeAt(0).toString(8);
+                if(oct in dict)
+                    mid += `.concat(${dict[oct]})`
+                else{
+                    let x = oct.toString()
+                    let res = emptystr;
+                    for(let c of x) res += `.concat(${dict[c]})`
+                    mid += `.concat(${res})`
+                }
+            }
+            mid += `.join(${dict['\\']})`
+            let suf = `${dict['\'']}).concat(${dict[')']}`
+        
+            return `with(escape())with(eval)eval(${prefix}.concat(${mid}).concat(${suf}))`
+        }
+        
+        // choose the shorter code
+        function convert(input){
+            const [res1, res2] = [encode_eval(input), encode_unescape(input)]
+            if(res2.length < res1.length)
+                return res2
+            return res1
+        }
+        
+        _convert.onclick = function(){
+            const input = _plain.value;
+            let res = convert(input);
+            _code.value = res
+        }
+        
+        _eval.onclick = function(){
+            _convert.click();
+            let code = _code.value;
+            eval(code);
+        }
+        
+        </script>
+        
