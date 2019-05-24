@@ -1,8 +1,8 @@
 # JS-Alpha
 Funny project to create an encoder/obfuscator that converts any javascript code into a code that only consist of `/[a-z().]/` characters
 
-Demo1: https://terjanq.github.io/JS-Alpha/encoder.html (full support)
-Demo2: https://terjanq.github.io/JS-Alpha/encoder2.html (no FireFox support, `with` statement used)
+Demo1: https://terjanq.github.io/JS-Alpha/encoder.html (full support)  
+Demo2: https://terjanq.github.io/JS-Alpha/encoder2.html (no FireFox support, `with` statement used)  
 
 
 ```javascript
