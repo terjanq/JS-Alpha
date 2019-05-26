@@ -1,0 +1,117 @@
+<style>
+        body{color:#14171a;background:#e6ecf0}#_plain{width:100%;height:100%}#_code{width:100%;height:100%}#_convert{position:absolute;top:15px;right:15px;opacity:.6;cursor:pointer}textarea{padding:10px}button{height:30px}#_eval{position:absolute;top:50px;right:15px;opacity:.6;cursor:pointer}table{width:100%;height:calc(100vh - 300px)}table td{position:relative;padding:10px}.title h1{font-size:60px}.title h1,.title p{text-align:center}.title p{font-style:italic;font-size:20px}
+        </style>
+        <div class=title>
+        <h1>JS-Alpha</h1>
+        <p>Convert any JavaScript code into one containing only <code>/[a-z.()]/</code> characters.</p>
+        </div>
+        
+        <table>
+            <tr>
+                <td>
+                    <textarea id=_plain>alert('xss')</textarea>
+                    <button id=_convert>convert</button>
+                    <button id=_eval>convert & eval</button>
+                </td>
+                <td>
+                    <textarea id=_code></textarea>
+                </td>
+            </tr>
+        </table>
+        
+        
+        <script>
+        const emptystr = 'escape().match().pop()';
+        const dict = {
+            // numbers
+            '-1': 'escape().search(true)',
+            0: 'escape().search()',
+            1: 'eval.length',
+            2: 'eval.apply.length',
+            3: 'escape().sub.name.length',
+            4: 'eval.name.length',
+            5: 'escape(false).length',
+            6: 'escape.name.length',
+            7: '(typeof(true)).length',
+            8: 'unescape.name.length',
+            9: 'escape().length',
+            14: '(typeof(true)).bold().length',
+            27: 'escape().big().bold().length',
+        
+            // hex letters
+            a: 'escape(...eval.apply.name)',
+            b: 'escape(...eval.bind.name)',
+            c: 'escape(...eval.call.name)',
+            d: 'eval.bind.name.slice(escape().search(true))',
+            e: 'escape(...eval.name)',
+            f: 'escape(...escape(eval))',
+        
+            // escape character
+            '%': 'unescape(...escape(this))',
+        }
+        
+        dict[')'] = `unescape(eval).split(escape().match()).slice(${dict[14]}).shift()`
+        dict['\''] = `unescape(${dict['%']}.concat(${dict[27]}))`
+        dict['\\'] = `unescape(${dict['%']}.concat(${dict[5]}).concat(${dict['c']}))` // \
+        
+        // Code written by Pepe Vila (@cgvwzq)
+        // unescape('%2f%27')
+        function encode_unescape(input){
+            let cnv = [...input].map(e => ('00' + e.charCodeAt(0).toString(16)).substr(-2));
+            let output = 'eval(unescape(escape().match()';
+            for (let c in cnv) {
+                if (cnv[c] in dict)
+                    output += '.concat('+dict[cnv[c]]+')';
+                else{
+                    let [u,l] = cnv[c];
+                    output += '.concat(escape('+dict[u]+').concat('+dict[l]+'))';
+                } 
+            }
+            output += '.join('+dict['%']+')))';
+            return output
+        }
+        
+        // Code written by me (@terjanq)
+        // eval('\141\141\141')
+        function encode_eval(input){
+            let prefix = `unescape(eval).substr(...(escape(${dict[9]}).concat(eval).concat(${dict[5]}).split(eval))).concat(${dict['\'']})`
+            let mid = 'escape().match()'
+            for(let c of input) {
+                let oct = c.charCodeAt(0).toString(8);
+                if(oct in dict)
+                    mid += `.concat(${dict[oct]})`
+                else{
+                    let x = oct.toString()
+                    let res = emptystr;
+                    for(let c of x) res += `.concat(${dict[c]})`
+                    mid += `.concat(${res})`
+                }
+            }
+            mid += `.join(${dict['\\']})`
+            let suf = `${dict['\'']}).concat(${dict[')']}`
+        
+            return `eval(${prefix}.concat(${mid}).concat(${suf}))`
+        }
+        
+        // choose the shorter code
+        function convert(input){
+            const [res1, res2] = [encode_eval(input), encode_unescape(input)]
+            if(res2.length < res1.length)
+                return res2
+            return res1
+        }
+        
+        _convert.onclick = function(){
+            const input = _plain.value;
+            let res = convert(input);
+            _code.value = res
+        }
+        
+        _eval.onclick = function(){
+            _convert.click();
+            let code = _code.value;
+            eval(code);
+        }
+        
+        </script>
+        
