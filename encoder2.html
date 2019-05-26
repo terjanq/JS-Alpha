@@ -241,7 +241,7 @@
                     output += '.concat('+dict[cnv[c]]+')';
                 else{
                     let [u,l] = cnv[c];
-                    if (typeof (eval('with(escape())with(eval.bind)'+dic[u])) === "string") {
+                    if (typeof (eval('with(escape())with(eval.bind)'+dict[u])) === "string") {
                         output += '.concat('+dict[u]+'.concat('+dict[l]+'))';
                     } else {
                         output += '.concat(escape('+dict[u]+').concat('+dict[l]+'))';
