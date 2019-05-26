@@ -1,19 +1,17 @@
-# JS-Alpha
-Funny project to create an encoder/obfuscator that converts any javascript code into a code that only consist of `/[a-z().]/` characters
+# JS-Alpha v3.0
+Funny project to create an encoder/obfuscator that converts any javascript code into a code that only consists of `/[a-z().]/` characters
 
-Demo1: https://terjanq.github.io/JS-Alpha/encoder.html (full support)  
-Demo2: https://terjanq.github.io/JS-Alpha/encoder2.html (no FireFox support, `with` statement used)  
+The generated code should work on all platforms. It uses only standardized functions.   
 
-
-```javascript
-eval(unescape(escape().match().concat(escape(escape.name.length).concat(eval.length)).concat(escape(escape.name.length).concat(escape(...eval.call.name))).concat(escape(escape.name.length).concat(escape(false).length)).concat(escape((typeof(true)).length).concat(eval.apply.length)).concat(escape((typeof(true)).length).concat(eval.name.length)).concat(escape(eval.apply.length).concat(unescape.name.length)).concat(escape(escape().sub.name.length).concat(eval.length)).concat(escape(escape().sub.name.length).concat(escape().sub.name.length)).concat(escape(escape().sub.name.length).concat(escape().sub.name.length)).concat(escape(escape().sub.name.length).concat((typeof(true)).length)).concat(escape(eval.apply.length).concat(escape().length)).join(unescape(...escape(this)))))
-```
+Demo: https://terjanq.github.io/JS-Alpha/encoder.html 
 
 ```
-with(escape())with(eval)eval(unescape(match().concat(link(unescape).length).concat(escape(escape.name.length).concat(escape(...call.name))).concat(fontsize(escape).length).concat(escape(eval).strike().length).concat(escape(eval).link(true).length).concat(name.link().length).concat(big().big().length).concat(unescape(eval).length).concat(unescape(eval).length).concat(unescape(unescape).length).concat(apply.name.link().length).join(unescape(...escape(this)))))
+with(escape())with(eval.bind)eval(unescape(match().concat(strike().big().link().length).concat(escape(escape.name.length).concat(escape(...call.name))).concat(escape(escape(link())).length).concat(link().blink().link().length).concat(link().link().strike().length).concat(name.link().length).concat(big().big().length).concat(link().length).concat(link().length).concat(strike().big().length).concat(fixed().big().length).join(unescape(...escape(this)))))
 ```
 
-*No UTF8 support*
+**Notes**
+- *The main version `encoder.html` cannot be used in some cases where `with` statement cannot be inserted (e.g. inside `if` closure). In that case the `encoder_old.html` should work but produces much bigger code.*
+- *No UTF8 support*
 
 
 ### Credits
