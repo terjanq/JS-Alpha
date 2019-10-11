@@ -1,0 +1,71 @@
+body {
+    color: #14171a;
+    background: #e6ecf0
+}
+
+#_plain {
+    width: 100%;
+    height: 100%
+}
+
+#_code {
+    width: 100%;
+    height: 100%
+}
+
+#_convert {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    opacity: .6;
+    cursor: pointer
+}
+
+textarea {
+    padding: 10px
+}
+
+button {
+    height: 30px
+}
+
+#_eval {
+    position: absolute;
+    top: 50px;
+    right: 15px;
+    opacity: .6;
+    cursor: pointer
+}
+
+#_length {
+    position: absolute;
+    top: 85px;
+    right: 15px;
+    opacity: .6;
+    cursor: pointer;
+    pointer-events: none;
+}
+
+table {
+    width: 100%;
+    height: calc(100vh - 300px)
+}
+
+table td {
+    position: relative;
+    padding: 10px
+}
+
+.title h1 {
+    font-size: 60px
+}
+
+.title h1,
+.title p {
+    text-align: center
+}
+
+.title p {
+    font-style: italic;
+    font-size: 20px
+}
