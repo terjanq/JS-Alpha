@@ -1,0 +1,271 @@
+<link rel="stylesheet" href="style.css">
+<div class=title>
+    <h1>JS-Alpha v2.0</h1>
+    <p>Convert any JavaScript code into one containing only <code>/[a-z()]/</code> characters.</p>
+</div>
+
+<table>
+    <tr>
+        <td>
+            <textarea id=_plain>alert('xss')</textarea>
+            <button id=_convert>convert</button>
+            <button id=_eval>convert & eval</button>
+            <button id=_length>Length: </button>
+        </td>
+        <td>
+            <textarea id=_code></textarea>
+        </td>
+    </tr>
+</table>
+
+
+<script>
+    const emptystr = 'match().pop()';
+    const dic = {
+        // numbers
+        '-1': 'search(big)',
+        0: "with(sub)with(push(length))",
+        1: "with(call)with(push(length))",
+        2: "with(slice)with(push(length))",
+        3: "with(sub)with(name)with(push(length))",
+        4: "with(escape(true))with(push(length))",
+        5: "with(escape(false))with(push(length))",
+        6: "with(strike)with(name)with(push(length))",
+        7: "with(italics)with(name)with(push(length))",
+        8: "with(includes)with(name)with(push(length))",
+        9: "with(escape())with(push(length))",
+        10: "with(sub)with(name)with(bold())with(push(length))",
+        11: "with(escape(true))with(bold())with(push(length))",
+        12: "with(escape(false))with(bold())with(push(length))",
+        13: "with(escape(true))with(fixed())with(push(length))",
+        14: "with(sub)with(name)with(sup())with(push(length))",
+        15: "with(escape(true))with(sup())with(push(length))",
+        16: "with(escape())with(bold())with(push(length))",
+        17: "with(strike)with(name)with(sup())with(push(length))",
+        18: "with(escape())with(fixed())with(push(length))",
+        19: "with(escape(true))with(blink())with(push(length))",
+        20: "with(escape())with(sup())with(push(length))",
+        21: "with(escape(true))with(strike())with(push(length))",
+        22: "with(escape(false))with(strike())with(push(length))",
+        23: "with(strike)with(name)with(strike())with(push(length))",
+        24: "with(escape())with(blink())with(push(length))",
+        25: "with(includes)with(name)with(strike())with(push(length))",
+        26: "with(escape())with(strike())with(push(length))",
+        27: "with(sub)with(name)with(link())with(push(length))",
+        28: "with(escape(true))with(link())with(push(length))",
+        29: "with(escape(false))with(link())with(push(length))",
+        30: "with(strike)with(name)with(link())with(push(length))",
+        31: "with(italics)with(name)with(link())with(push(length))",
+        32: "with(unescape(sub))with(push(length))",
+        33: "with(unescape(bind))with(push(length))",
+        34: "with(unescape(apply))with(push(length))",
+        35: "with(unescape(strike))with(push(length))",
+        36: "with(unescape(italics))with(push(length))",
+        37: "with(unescape(includes))with(push(length))",
+        38: "with(unescape(fontcolor))with(push(length))",
+        39: "with(escape())with(fontsize())with(push(length))",
+        40: "with(escape())with(fontcolor())with(push(length))",
+        41: "with(unescape(sub))with(fixed())with(push(length))",
+        42: "with(unescape(bind))with(fixed())with(push(length))",
+        43: "with(unescape(sub))with(sup())with(push(length))",
+        44: "with(unescape(bind))with(sup())with(push(length))",
+        45: "with(unescape(apply))with(sup())with(push(length))",
+        46: "with(unescape(strike))with(sup())with(push(length))",
+        47: "with(unescape(sub))with(blink())with(push(length))",
+        48: "with(unescape(bind))with(blink())with(push(length))",
+        49: "with(unescape(sub))with(strike())with(push(length))",
+        50: "with(unescape(bind))with(strike())with(push(length))",
+        51: "with(escape(true))with(link(sub))with(push(length))",
+        52: "with(escape(false))with(link(sub))with(push(length))",
+        53: "with(escape(false))with(link(bind))with(push(length))",
+        54: "with(escape(sub))with(push(length))",
+        55: "with(escape(bind))with(push(length))",
+        56: "with(escape(apply))with(push(length))",
+        57: "with(escape(strike))with(push(length))",
+        58: "with(escape(italics))with(push(length))",
+        59: "with(escape(includes))with(push(length))",
+        60: "with(escape(fontcolor))with(push(length))",
+        61: "with(escape(sub))with(bold())with(push(length))",
+        62: "with(escape(bind))with(bold())with(push(length))",
+        63: "with(escape(sub))with(fixed())with(push(length))",
+        64: "with(escape(bind))with(fixed())with(push(length))",
+        65: "with(escape(sub))with(sup())with(push(length))",
+        66: "with(escape(bind))with(sup())with(push(length))",
+        67: "with(escape(apply))with(sup())with(push(length))",
+        68: "with(escape(strike))with(sup())with(push(length))",
+        69: "with(escape(sub))with(blink())with(push(length))",
+        70: "with(escape(bind))with(blink())with(push(length))",
+        71: "with(escape(sub))with(strike())with(push(length))",
+        72: "with(escape(bind))with(strike())with(push(length))",
+        73: "with(escape(apply))with(strike())with(push(length))",
+        74: "with(escape(strike))with(strike())with(push(length))",
+        75: "with(escape(italics))with(strike())with(push(length))",
+        76: "with(escape(escape(sub)))with(push(length))",
+        77: "with(escape(escape(bind)))with(push(length))",
+        78: "with(escape(escape(apply)))with(push(length))",
+        79: "with(escape(escape(strike)))with(push(length))",
+        80: "with(escape(escape(italics)))with(push(length))",
+        81: "with(escape(escape(includes)))with(push(length))",
+        82: "with(escape(escape(fontcolor)))with(push(length))",
+        83: "with(escape(includes))with(link())with(push(length))",
+        84: "with(escape(sub))with(fontsize())with(push(length))",
+        85: "with(escape(sub))with(fontcolor())with(push(length))",
+        86: "with(escape(bind))with(fontcolor())with(push(length))",
+        87: "with(escape(apply))with(fontcolor())with(push(length))",
+        88: "with(escape(strike))with(fontcolor())with(push(length))",
+        89: "with(escape(italics))with(fontcolor())with(push(length))",
+        90: "with(escape())with(link(link(sub)))with(push(length))",
+        91: "with(escape())with(link(link(bind)))with(push(length))",
+        92: "with(unescape(bind))with(link(sup()))with(push(length))",
+        93: "with(escape(sub))with(escape(fixed()))with(push(length))",
+        94: "with(escape())with(escape(link(sub)))with(push(length))",
+        95: "with(escape(sub))with(escape(sup()))with(push(length))",
+        96: "with(escape(bind))with(escape(sup()))with(push(length))",
+        97: "with(escape(apply))with(escape(sup()))with(push(length))",
+        98: "with(escape(escape(escape(sub))))with(push(length))",
+        99: "with(escape(escape(escape(bind))))with(push(length))",
+        100: "with(escape(escape(escape(apply))))with(push(length))",
+        101: "with(escape(sub))with(link(sub))with(push(length))",
+        102: "with(escape(sub))with(link(bind))with(push(length))",
+        103: "with(escape(sub))with(link(apply))with(push(length))",
+        104: "with(escape(sub))with(link(strike))with(push(length))",
+        105: "with(escape(sub))with(link(italics))with(push(length))",
+        106: "with(escape(sub))with(link(includes))with(push(length))",
+        107: "with(escape(sub))with(fontsize(sub))with(push(length))",
+        108: "with(escape(sub))with(fontcolor(sub))with(push(length))",
+        109: "with(escape(sub))with(fontcolor(bind))with(push(length))",
+        110: "with(escape(sub))with(fontcolor(apply))with(push(length))",
+        111: "with(escape(sub))with(fontcolor(strike))with(push(length))",
+        112: "with(escape(sub))with(fontcolor(italics))with(push(length))",
+        113: "with(unescape(sub))with(link(link()))with(push(length))",
+        114: "with(escape(sub))with(fontcolor(fontcolor))with(push(length))",
+        115: "with(unescape(bind))with(link(link()))with(push(length))",
+        116: "with(escape(sub))with(escape(link()))with(push(length))",
+        117: "with(escape(bind))with(escape(link()))with(push(length))",
+        118: "with(escape(apply))with(escape(link()))with(push(length))",
+        119: "with(escape(strike))with(escape(link()))with(push(length))",
+        120: "with(escape(italics))with(escape(link()))with(push(length))",
+        121: "with(unescape(italics))with(link(link()))with(push(length))",
+        122: "with(escape(sub))with(escape(fontsize()))with(push(length))",
+        123: "with(escape(escape(sub)))with(link(sub))with(push(length))",
+        124: "with(escape(escape(sub)))with(link(bind))with(push(length))",
+        125: "with(escape(escape(sub)))with(link(apply))with(push(length))",
+        126: "with(escape(escape(sub)))with(link(strike))with(push(length))",
+        127: "with(escape(escape(sub)))with(link(italics))with(push(length))",
+        128: "with(escape(escape(sub)))with(link(includes))with(push(length))",
+        129: "with(escape(escape(sub)))with(fontsize(sub))with(push(length))",
+        130: "with(escape(sub))with(link(bold()))with(push(length))",
+        131: "with(escape(escape(sub)))with(fontcolor(bind))with(push(length))",
+        132: "with(escape(sub))with(link(fixed()))with(push(length))",
+        133: "with(escape())with(escape(escape(link(bind))))with(push(length))",
+        134: "with(escape(sub))with(link(sup()))with(push(length))",
+        135: "with(escape())with(link(link(link(link()))))with(push(length))",
+        136: "with(escape(bind))with(link(sup()))with(push(length))",
+        137: "with(escape(sub))with(fontcolor(bold()))with(push(length))",
+        138: "with(escape(sub))with(link(blink()))with(push(length))",
+        139: "with(escape(sub))with(fontcolor(fixed()))with(push(length))",
+        140: "with(escape(sub))with(link(strike()))with(push(length))",
+        141: "with(escape(sub))with(fontcolor(sup()))with(push(length))",
+        142: "with(escape(bind))with(link(strike()))with(push(length))",
+        143: "with(escape(bind))with(fontcolor(sup()))with(push(length))",
+        144: "with(escape(apply))with(link(strike()))with(push(length))",
+        145: "with(escape(sub))with(fontcolor(blink()))with(push(length))",
+        146: "with(escape(strike))with(link(strike()))with(push(length))",
+        147: "with(escape(sub))with(fontcolor(strike()))with(push(length))",
+        148: "with(escape(italics))with(link(strike()))with(push(length))",
+        149: "with(escape(bind))with(fontcolor(strike()))with(push(length))",
+        150: "with(escape(includes))with(link(strike()))with(push(length))",
+        151: "with(escape(apply))with(fontcolor(strike()))with(push(length))",
+        152: "with(escape(fontcolor))with(link(strike()))with(push(length))",
+        153: "with(unescape(apply))with(link(link(sup())))with(push(length))",
+        154: "with(escape(italics))with(fontsize(strike()))with(push(length))",
+        155: "with(escape(italics))with(fontcolor(strike()))with(push(length))",
+        156: "with(unescape(strike))with(link(link(sup())))with(push(length))",
+        157: "with(escape(sub))with(link(link()))with(push(length))",
+        158: "with(unescape(sub))with(escape(link(sup())))with(push(length))",
+        159: "with(escape(bind))with(link(link()))with(push(length))",
+        160: "with(escape(sub))with(link(escape(bold())))with(push(length))",
+        161: "with(escape(apply))with(link(link()))with(push(length))",
+        162: "with(escape(sub))with(escape(link(bind)))with(push(length))",
+        163: "with(escape(strike))with(link(link()))with(push(length))",
+        164: "with(escape(sub))with(link(fontcolor()))with(push(length))",
+        165: "with(escape(italics))with(link(link()))with(push(length))",
+        166: "with(escape(bind))with(link(fontcolor()))with(push(length))",
+        167: "with(escape(includes))with(link(link()))with(push(length))",
+        168: "with(escape(apply))with(link(fontcolor()))with(push(length))",
+        169: "with(escape(fontcolor))with(link(link()))with(push(length))",
+        170: "with(escape(strike))with(link(fontcolor()))with(push(length))",
+        171: "with(escape(italics))with(link(fontsize()))with(push(length))",
+        172: "with(escape(italics))with(link(fontcolor()))with(push(length))",
+        173: "with(escape(includes))with(link(fontsize()))with(push(length))",
+        174: "with(escape(escape(sub)))with(link(bold()))with(push(length))",
+        175: "with(escape(fontcolor))with(link(fontsize()))with(push(length))",
+        176: "with(escape(escape(sub)))with(link(fixed()))with(push(length))",
+        177: "with(escape(italics))with(fontsize(fontsize()))with(push(length))",
+        a: 'with(splice(big))with(apply)with(concat(from(name)))with(pop(pop(pop(pop()))))',
+        b: 'with(sub)with(name)with(push(slice(search(sup))))',
+        c: 'with(splice(big))with(call)with(concat(from(name)))with(pop(pop(pop())))',
+        d: 'with(bind)with(name)with(push(slice(search(sup))))',
+        e: 'with(slice)with(name)with(push(slice(search(sup))))',
+        f: 'with(splice(big))with(find)with(concat(from(name)))with(pop(pop(pop())))',
+        '%': 'with(unescape(big))with(push(escape(slice(search(big)))))with(splice(big))with(concat(from(pop())))with(pop(pop()))'
+    }
+
+    dic['\\'] = convert_single_16("\\") + dic['%'] + 'with(pop())with(push(unescape(concat(pop()))))'
+
+    function convert_single_16(c) {
+        c = ('00' + c.charCodeAt(0).toString(16)).substr(-2);
+        if (dic[c]) {
+            return dic[c]
+        }
+        let [u, l] = c;
+        return dic[l] + dic[u] + 'with(escape(pop()))with(push(concat(pop())))'
+    }
+
+    function convert_single_8(c) {
+        c = c.charCodeAt(0).toString(8);
+        if (dic[c]) {
+            return dic[c]
+        }
+        throw "unexpected octal"
+    }
+
+    function convert1(input) {
+        let output = 'with(escape())with(match())with(constructor)';
+        output += [...input].map(convert_single_16).join('');
+        output += dic['%'] + 'eval(unescape(((join(pop())))))';
+        return output;
+    }
+
+    function convert2(input) {
+        let output = 'with(escape())with(match())with(constructor)';
+        output += [...input].map(convert_single_8).join('');
+        output += dic['\\']
+        output += 'with(from(join(unescape(pop()))))'
+        output += convert_single_16("\"") + dic['%'] + 'with(pop())with(unescape(concat(pop())))'
+        output += 'with(push(trim()))with(unshift(trim()))'
+        output += 'eval(eval(((join(match())))))';
+        return output;
+    }
+
+    // choose the shorter code
+    function convert(input) {
+        const [res1, res2] = [convert1(input), convert2(input)]
+        if (res2.length < res1.length)
+            return res2
+        return res1
+    }
+
+    _convert.onclick = function() {
+        const input = _plain.value;
+        let res = convert(input);
+        _length.innerHTML = `Length: ${res.length}`
+        _code.value = res
+    }
+
+    _eval.onclick = function() {
+        _convert.click();
+        let code = _code.value;
+        eval(code);
+    }
+</script>
